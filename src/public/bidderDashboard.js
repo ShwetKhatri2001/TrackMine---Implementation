@@ -37,7 +37,7 @@ App = {
                                                 <hr>
 
                                                 <center style="margin-bottom:10px;">
-                                                    <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${tender[0]}" placeholder="Price per Item">
+                                                    <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${tender[0]}" placeholder="Enter your Bid here">
                                                     <button class="w3-button w3-green" style="width:150px;" onclick="App.makeBid(${tender[0]});">Make a Bid</button>
                                                 </center>
 
@@ -54,11 +54,12 @@ App = {
     const bidCount = await App.TenderAuction.bidCount();
     for (i = 1; i <= bidCount; i++) {
       const bid = await App.TenderAuction.bids(i);
-      if (bid[4] == App.account) {
+      console.log("my-bid", bid);
+      if (bid[5] == App.account) {
         const bidTemplate = `<tr style="text-align:center">
                                             <td>${bid[0]}</td>
-                                            <td>${bid[2]}</td>
                                             <td>${bid[3]}</td>
+                                            <td>${bid[4]}</td>
                                             <td>
                                         </tr>`;
         $("#myBids").append(bidTemplate);

@@ -19,6 +19,7 @@ contract TenderAuction {
 
     struct Bid {
         uint id;
+        address tenderBy;
         uint tenderId;
         string tenderTitle;
         uint bid;
@@ -85,6 +86,7 @@ contract TenderAuction {
     function createBid(uint _tenderId, uint _bid) public {
         bidCount++;
         string memory tenderName = tenders[_tenderId].itemName;
-        bids[bidCount] = Bid(bidCount, _tenderId, tenderName, _bid, msg.sender);
+        address tenderBy = tenders[_tenderId].userHash;
+        bids[bidCount] = Bid(bidCount, tenderBy, _tenderId, tenderName, _bid, msg.sender);
     }
 }
