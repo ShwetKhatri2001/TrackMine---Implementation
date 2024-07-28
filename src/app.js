@@ -62,7 +62,7 @@ app.get("/truffleContract", (req, res) => {
 
 app.get("/", (req, res) => {
   if (req.user) {
-    if (req.user.type != "false") {
+    if (req.user.type !== "false") {
       res.redirect("/dashboard");
     } else {
       res.redirect("/confirmType");
@@ -82,7 +82,7 @@ app.get("/authenticate", (req, res) => {
 
 app.get("/confirmType", (req, res) => {
   if (req.user) {
-    if (req.user.type != "false") {
+    if (req.user.type !== "false") {
       res.redirect("/");
     } else {
       res.render("confirmType.ejs");
@@ -94,12 +94,8 @@ app.get("/confirmType", (req, res) => {
 
 app.get("/dashboard", (req, res) => {
   if (req.user) {
-    if (req.user.type != "false") {
-      if (req.user.type == "uploader") {
-        res.redirect("/uploaderDashboard");
-      } else {
-        res.redirect("/bidderDashboard");
-      }
+    if (req.user.type !== "false") {
+      res.render("commonDashboard.ejs");
     } else {
       res.redirect("/confirmType");
     }
@@ -108,53 +104,13 @@ app.get("/dashboard", (req, res) => {
   }
 });
 
-app.get("/uploaderDashboard", (req, res) => {
-  if (req.user) {
-    if (req.user.type != "false") {
-      if (req.user.type == "uploader") {
-        res.render("uploaderDashboard.ejs");
-      } else {
-        res.redirect("/dashboard");
-      }
-    } else {
-      res.redirect("/confirmType");
-    }
-  } else {
-    res.redirect("/");
-  }
-});
 
-app.get("/bidderDashboard", (req, res) => {
-  if (req.user) {
-    if (req.user.type != "false") {
-      if (req.user.type == "bidder") {
-        res.render("bidderDashboard.ejs");
-      } else {
-        res.redirect("/dashboard");
-      }
-    } else {
-      res.redirect("/confirmType");
-    }
-  } else {
-    res.redirect("/");
-  }
-});
 
-app.get("/createUploader", (req, res) => {
+
+app.get("/createActor", (req, res) => {
   User.findOne({ username: req.query.username }, (err, user) => {
-    if (user.type == "false") {
-      user.type = "uploader";
-      user.save();
-    }
-  });
-  res.redirect("/");
-});
-
-app.get("/createBidder", (req, res) => {
-  User.findOne({ username: req.query.username }, (err, user) => {
-    console.log(user.username);
-    if (user.type == "false") {
-      user.type = "bidder";
+    if (user.type === "false") {
+      user.type = req.query.type;
       user.save();
     }
   });

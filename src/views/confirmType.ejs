@@ -37,7 +37,7 @@
   </style>
 
   <body>
-    <div style="margin-top: 20px; width: 450px" class="container card">
+    <div style="margin-top: 20px" class="container card">
       <span><b>Address: </b><font id="account" size="2"></font></span>
       <span
         ><b>Username: </b
@@ -68,8 +68,44 @@
             style="width: 100px"
             onclick="App.createBidder();"
           >
-            Bidder</button
-          ><br />
+            Bidder
+          </button>
+          <button
+            class="w3-button w3-green"
+            style="width: 180px"
+            onclick="App.createActor('elecSupplier');"
+          >
+            Electricity Supplier
+          </button>
+          <button
+            class="w3-button w3-blue"
+            style="width: 180px"
+            onclick="App.createActor('powerplant');"
+          >
+            Thermal Power Plant
+          </button>
+          <button
+            class="w3-button w3-green"
+            style="width: 180px"
+            onclick="App.createActor('coalminer');"
+          >
+            Coal Miner
+          </button>
+          <button
+            class="w3-button w3-blue"
+            style="width: 180px"
+            onclick="App.createActor('transporter');"
+          >
+            Transporter
+          </button>
+          <button
+            class="w3-button w3-green"
+            style="width: 180px"
+            onclick="App.createActor('authority');"
+          >
+            Regulatory Authority
+          </button>
+          <br />
           <font
             size="1"
             color="blue"
@@ -88,7 +124,7 @@
       </center>
     </div>
 
-    <div style="margin-top: 20px" class="container card">
+    <div style="margin-top: 20px; display: none" class="container card">
       <table id="uploader" border="1">
         <center>
           <h6><b>Uploaders</b></h6>
@@ -102,7 +138,7 @@
       </table>
     </div>
 
-    <div style="margin-top: 20px" class="container card">
+    <div style="margin-top: 20px; display: none" class="container card">
       <table id="bidder" border="1">
         <center>
           <h6><b>Bidders</b></h6>

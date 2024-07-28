@@ -47,24 +47,16 @@ App = {
     }
   },
 
-  createUploader: async () => {
+  createActor: async (type) => {
     App.setLoading(true);
     const username = $("#username").text();
     try {
-      await App.TenderAuction.createUploader(username, { from: App.account });
-      location.href = "/createUploader?username=" + username;
-    } catch {
-      window.location.reload();
-    }
-  },
-
-  createBidder: async () => {
-    App.setLoading(true);
-    const username = $("#username").text();
-    try {
-      await App.TenderAuction.createBidder(username, { from: App.account });
-      location.href = "/createBidder?username=" + username;
-    } catch {
+      await App.TenderAuction.createActor(username, type, {
+        from: App.account,
+      });
+      location.href = "/createActor?username=" + username + "&type=" + type;
+    } catch (error) {
+      console.log(error);
       window.location.reload();
     }
   },

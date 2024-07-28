@@ -10,11 +10,13 @@ contract TenderAuction {
     struct Uploader {
         uint id;
         string username;
+        string usertype;
     }
 
     struct Bidder {
         uint id;
         string username;
+        string usertype;
     }
 
     struct Bid {
@@ -66,16 +68,14 @@ contract TenderAuction {
         _;
     }
 
-    function createUploader(string memory _username) public alreadyPresent(msg.sender) {
+
+     function createActor(string memory _username, string memory _usertype) public alreadyPresent(msg.sender) { 
         uploaderCount++;
         whoIsUploader[uploaderCount] = msg.sender;
-        uploaders[msg.sender] = Uploader(uploaderCount, _username);
-    }
-
-    function createBidder(string memory _username) public alreadyPresent(msg.sender) {
+        uploaders[msg.sender] = Uploader(uploaderCount, _username, _usertype);
         bidderCount++;
         whoIsBidder[bidderCount] = msg.sender;
-        bidders[msg.sender] = Bidder(bidderCount, _username);
+        bidders[msg.sender] = Bidder(bidderCount, _username, _usertype);
     }
 
     function createTender(string memory _itemName, string memory _itemDescription, uint _quantity) public {
