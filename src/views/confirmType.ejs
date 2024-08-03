@@ -6,150 +6,111 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
     <title>Confirm your type</title>
-
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
-  <style>
-    #loading {
-      border: 2px solid #f3f3f3; /* Light grey */
-      border-top: 2px solid #3498db; /* Blue */
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-
   <body>
-    <div style="margin-top: 20px" class="container card">
-      <span><b>Address: </b><font id="account" size="2"></font></span>
-      <span
-        ><b>Username: </b
-        ><font id="username" size="2"><%=currentUser.username%></font></span
-      >
+    <div>
+      <header class="navbar">
+        <div class="logo-container">
+          <img
+            src="https://user-images.githubusercontent.com/75155230/162634488-a86df851-81ab-41d4-9c15-d1155683a935.png"
+            alt="TrackMine Logo"
+            class="logo"
+          />
+          <h2 class="myheader">TrackMine</h2>
+          <nav>
+            <ul>
+              <li><a href="/logout">Logout</a></li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      <div class="my-container type-container">
+        <span style="display: none"
+          ><b>Username: </b
+          ><font id="username" size="3"><%=currentUser.username%></font></span
+        >
+        <span
+          ><b>Name: </b
+          ><font id="name" size="3"><%=currentUser.name%></font></span
+        >
+        <span><b>Address: </b><font id="account" size="3"></font></span>
 
-      <font
-        size="1"
-        color="green"
-        style="margin-top: 10px; margin-bottom: -10px"
-        >*Select user type from below two options. Remember once selected can't
-        be changed.</font
-      >
+        <font size="1" color="green" style="font-size: 14px; color: #007bff">
+          * Select user type from below five options. Remember once selected
+          can't be changed.
+        </font>
 
-      <hr />
+        <hr />
 
-      <center style="margin-top: -15px; margin-bottom: -10px">
-        <div class="w3-section" id="content">
+        <div class="roles-list" id="content">
           <button
-            class="w3-button w3-green"
-            style="width: 100px"
-            onclick="App.createUploader();"
-          >
-            Uploader
-          </button>
-          <button
-            class="w3-button w3-blue"
-            style="width: 100px"
-            onclick="App.createBidder();"
-          >
-            Bidder
-          </button>
-          <button
-            class="w3-button w3-green"
             style="width: 180px"
-            onclick="App.createActor('elecSupplier');"
+            onclick="App.createActor('Electricity Supplier');"
           >
             Electricity Supplier
           </button>
           <button
             class="w3-button w3-blue"
             style="width: 180px"
-            onclick="App.createActor('powerplant');"
+            onclick="App.createActor('Thermal Power Plant');"
           >
             Thermal Power Plant
           </button>
-          <button
-            class="w3-button w3-green"
-            style="width: 180px"
-            onclick="App.createActor('coalminer');"
-          >
+          <button style="width: 180px" onclick="App.createActor('Coal Miner');">
             Coal Miner
           </button>
           <button
             class="w3-button w3-blue"
             style="width: 180px"
-            onclick="App.createActor('transporter');"
+            onclick="App.createActor('Transporter');"
           >
             Transporter
           </button>
           <button
-            class="w3-button w3-green"
             style="width: 180px"
-            onclick="App.createActor('authority');"
+            onclick="App.createActor('Regulatory Authority');"
           >
             Regulatory Authority
           </button>
-          <br />
-          <font
-            size="1"
-            color="blue"
-            style="cursor: pointer"
-            onclick="location.href='/logout'"
-            >Not you? Logout here.</font
-          >
         </div>
-      </center>
 
-      <center>
-        <div
-          id="loading"
-          style="margin-top: 10px; display: none; margin-bottom: 5px"
-        ></div>
-      </center>
-    </div>
-
-    <div style="margin-top: 20px; display: none" class="container card">
-      <table id="uploader" border="1">
         <center>
-          <h6><b>Uploaders</b></h6>
+          <div
+            id="loading"
+            style="margin-top: 10px; display: none; margin-bottom: 5px"
+          ></div>
         </center>
-        <hr style="margin-top: -5px; margin-bottom: -1px" />
-        <tr style="text-align: center">
-          <td>Id</td>
-          <td>Username</td>
-          <td>Address</td>
-        </tr>
-      </table>
-    </div>
+      </div>
 
-    <div style="margin-top: 20px; display: none" class="container card">
-      <table id="bidder" border="1">
-        <center>
-          <h6><b>Bidders</b></h6>
-        </center>
-        <hr style="margin-top: -5px; margin-bottom: -1px" />
-        <tr style="text-align: center">
-          <td>Id</td>
-          <td>Username</td>
-          <td>Address</td>
-        </tr>
-      </table>
+      <!-- <div style="margin-top: 20px; display: none" class="container card">
+        <table id="uploader" border="1">
+          <center>
+            <h6><b>Uploaders</b></h6>
+          </center>
+          <hr style="margin-top: -5px; margin-bottom: -1px" />
+          <tr style="text-align: center">
+            <td>Id</td>
+            <td>Username</td>
+            <td>Address</td>
+          </tr>
+        </table>
+      </div> -->
+
+      <!-- <div style="margin-top: 20px; display: none" class="container card">
+        <table id="bidder" border="1">
+          <center>
+            <h6><b>Bidders</b></h6>
+          </center>
+          <hr style="margin-top: -5px; margin-bottom: -1px" />
+          <tr style="text-align: center">
+            <td>Id</td>
+            <td>Username</td>
+            <td>Address</td>
+          </tr>
+        </table>
+      </div> -->
     </div>
   </body>
 

@@ -14,34 +14,51 @@ App = {
 
   listMyTenders: async () => {
     const tenderCount = await App.TenderAuction.tenderCount();
-    for (i = 1; i <= tenderCount; i++) {
-      const tender = await App.TenderAuction.tenders(i);
-      console.log("my-tender", tender);
-      if (tender[4] === App.account) {
-        const tenderTemplate = `<tr style="text-align:center">
+    if (tenderCount > 0) {
+      for (i = 1; i <= tenderCount; i++) {
+        const tender = await App.TenderAuction.tenders(i);
+        // console.log("my-tender", tender);
+        if (tender[5] === App.account) {
+          const tenderTemplate = `<tr style="text-align:center">
                                               <td>${tender[0]}</td>
                                               <td>${tender[1]}</td>
+                                              <td>${tender[2]}</td>
                                               <td>${tender[3]}</td>
+                                              <td>${tender[4]}</td>
+                                              <td style="color: orange; font-weight: bold;">Pending</td>
                                           </tr>`;
-        $("#mytenders").append(tenderTemplate);
+          $("#mytenders").append(tenderTemplate);
+        }
       }
+    } else {
+      $("#mytenders").append(` 
+      <tr style="text-align: center">
+        <td colspan="4">No Requests Raised</td>
+      </tr>`);
     }
   },
 
   listBidsOnTenders: async () => {
     const bidCount = await App.TenderAuction.bidCount();
-    for (i = 1; i <= bidCount; i++) {
-      const bid = await App.TenderAuction.bids(i);
-      console.log("bid-on-tender", bid);
-      if (bid?.tenderBy === App.account) {
-        const bidTemplate = `<tr style="text-align:center">
+    if (bidCount > 0) {
+      for (i = 1; i <= bidCount; i++) {
+        const bid = await App.TenderAuction.bids(i);
+        console.log("bid-on-tender", bid);
+        if (bid?.tenderBy === App.account) {
+          const bidTemplate = `<tr style="text-align:center">
                                               <td>${bid[0]}</td>
                                               <td>${bid[3]}</td>
                                               <td>${bid[4]}</td>
                                               <td>
                                           </tr>`;
-        $("#bids").append(bidTemplate);
+          $("#bids").append(bidTemplate);
+        }
       }
+    } else {
+      $("#bids").append(` 
+      <tr style="text-align: center">
+        <td colspan="4">No Requests Accepted</td>
+      </tr>`);
     }
   },
 
@@ -50,11 +67,18 @@ App = {
     const itemName = $("#itemName").val();
     const itemDesc = $("#itemDesc").val();
     const itemQuantity = $("#itemQuantity").val();
+    const itemBudget = $("#itemBudget").val();
 
     try {
-      await App.TenderAuction.createTender(itemName, itemDesc, itemQuantity, {
-        from: App.account,
-      });
+      await App.TenderAuction.createTender(
+        itemName,
+        itemDesc,
+        itemQuantity,
+        itemBudget,
+        {
+          from: App.account,
+        }
+      );
       window.location.reload();
     } catch {
       window.location.reload();
@@ -63,61 +87,76 @@ App = {
 
   listAllTenders: async () => {
     const tenderCount = await App.TenderAuction.tenderCount();
-    for (i = 1; i <= tenderCount; i++) {
-      const tender = await App.TenderAuction.tenders(i);
-      console.log("all-tender", tender);
-      if (tender[4] !== App.account) {
-        const tenderTemplate = `<tr style="text-align:center">
+    if (tenderCount > 0) {
+      for (i = 1; i <= tenderCount; i++) {
+        const tender = await App.TenderAuction.tenders(i);
+        // console.log("all-tender", tender);
+        if (tender[5] !== App.account) {
+          const tenderTemplate = `<tr style="text-align:center">
                                             <td>${tender[0]}</td>
                                             <td>${tender[1]}</td>
+                                            <td>${tender[2]}</td>
                                             <td>${tender[3]}</td>
-                                            <td><button onclick="popup('${tender[0]}')" class="btn btn-success">Bid</button></td>
+                                            <td>${tender[4]}</td>
+                                            <td style="color: orange; font-weight: bold;">Pending</td>
+                                            <td><button onclick="popup('${tender[0]}')" class="btn btn-success">Accept</button></td>
                                         <tr>`;
 
-        const tenderPopupTemplate = `<div class="abc" id="tenderId${tender[0]}">
-                    
+          const tenderPopupTemplate = `<div class="abc" id="tenderId${tender[0]}">
                                                 <br><br><br>
-                                                
+                                                <div style="margin-top:15%; width: 550px; position: relative;" class="dashboard-container">
                                                 <span onclick="div_hide('${tender[0]}')" style="float:right" class="x">X</span>
-    
-                                                <div style="margin-top:20px; width: 550px;" class="container card w3-section">
                                                     
-                                                    <span><b>Tender ID: </b>${tender[0]}</span>
-                                                    <span><b>Tender: </b>${tender[1]}</span>
-                                                    <span><b>Quantity: </b>${tender[3]}</span>
-                                                    <span><b>Uploader Address: </b>${tender[4]}</span>
+                                                    <span style="margin-top:10px;"><b>Request ID: </b>${tender[0]}</span>
+                                                    <span style="margin-top:10px;"><b>Request Name: </b>${tender[1]}</span>
+                                                    <span style="margin-top:10px;"><b>Request Description: </b>${tender[2]}</span>
+                                                    <span style="margin-top:10px;"><b>Quantity: </b>${tender[3]}</span>
+                                                    <span style="margin-top:10px;"><b>Payment Alloted: </b>${tender[4]}</span>
     
                                                     <hr>
     
                                                     <center style="margin-bottom:10px;">
-                                                        <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${tender[0]}" placeholder="Enter your Bid here">
-                                                        <button class="w3-button w3-green" style="width:150px;" onclick="App.makeBid(${tender[0]});">Make a Bid</button>
+                                                        <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${tender[0]}" placeholder="Enter your Amount">
+                                                        <button class="w3-button w3-green" style="width:150px;" onclick="App.makeBid(${tender[0]});">Accept Request</button>
                                                     </center>
     
                                                 </div>
                                                 
                                             </div>`;
 
-        $("#allTenders").append(tenderTemplate);
-        $("#tenderPopup").append(tenderPopupTemplate);
+          $("#allTenders").append(tenderTemplate);
+          $("#tenderPopup").append(tenderPopupTemplate);
+        }
       }
+    } else {
+      $("allTenders").append(`
+      <tr style="text-align: center">
+        <td colspan="4">No Requests Accepted</td>
+      </tr>`);
     }
   },
 
   listMyBids: async () => {
     const bidCount = await App.TenderAuction.bidCount();
-    for (i = 1; i <= bidCount; i++) {
-      const bid = await App.TenderAuction.bids(i);
-      console.log("my-bid", bid);
-      if (bid[5] == App.account) {
-        const bidTemplate = `<tr style="text-align:center">
+    if (bidCount > 0) {
+      for (i = 1; i <= bidCount; i++) {
+        const bid = await App.TenderAuction.bids(i);
+        console.log("my-bid", bid);
+        if (bid[5] == App.account) {
+          const bidTemplate = `<tr style="text-align:center">
                                                 <td>${bid[0]}</td>
                                                 <td>${bid[3]}</td>
                                                 <td>${bid[4]}</td>
-                                                <td>
+                                                <td style="color: blue; font-weight: bold">Accepted</td>
                                             </tr>`;
-        $("#myBids").append(bidTemplate);
+          $("#myBids").append(bidTemplate);
+        }
       }
+    } else {
+      $("#myBids").append(`
+      <tr style="text-align: center">
+        <td colspan="4">No Requests Accepted By You</td>
+      </tr>`);
     }
   },
 

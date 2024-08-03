@@ -5,245 +5,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-    <title>Uploader</title>
-
-    <link
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css" />
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
-  <style>
-    .abc {
-      width: 100%;
-      height: 100%;
-      opacity: 0.95;
-      top: 0;
-      left: 0;
-      display: none;
-      position: fixed;
-      background-color: #313131;
-      overflow: auto;
-    }
-
-    .x {
-      position: absolute;
-      top: 50px;
-      right: 497px;
-      width: 40px;
-      height: 40px;
-      background: #efefef;
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-      line-height: 40px;
-      text-align: center;
-      cursor: pointer;
-    }
-
-    #loading {
-      border: 2px solid #f3f3f3; /* Light grey */
-      border-top: 2px solid #3498db; /* Blue */
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      animation: spin 2s linear infinite;
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-
   <body>
-    <div
-      style="margin-top: 20px; width: 650px"
-      class="container card w3-section"
-    >
-      <span><b>Address: </b><font id="account" size="2"></font></span>
-      <span>
-        <b>Username: </b>
-        <font id="username" size="2"><%=currentUser.username%></font>
-        <font
-          size="1"
-          color="blue"
-          style="cursor: pointer"
-          onclick="location.href='/logout'"
-          >Not you? Logout here.
-        </font>
-      </span>
+    <header class="navbar">
+      <div class="logo-container">
+        <img
+          src="https://user-images.githubusercontent.com/75155230/162634488-a86df851-81ab-41d4-9c15-d1155683a935.png"
+          alt="TrackMine Logo"
+          class="logo"
+        />
+        <h2 class="myheader">TrackMine</h2>
+        <nav>
+          <ul>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="dashboard-container">
+      <span style="display: none"
+        ><b>Username: </b
+        ><font id="username" size="3"><%=currentUser.username%></font></span
+      >
+      <span
+        ><b>Name: </b
+        ><font id="name" size="3"><%=currentUser.name%></font></span
+      >
+      <span
+        ><b>Role: </b
+        ><font id="name" size="3"><%=currentUser.type%></font></span
+      >
+      <span><b>Address: </b><font id="account" size="3"></font></span>
 
       <hr />
 
-      <center style="margin-bottom: 10px">
-        <button
-          class="w3-button w3-green"
-          style="width: 150px"
-          onclick="uploadTenders();"
-        >
-          Upload Tender
+      <div class="actions-list">
+        <button style="width: 225px" onclick="showAllTenders();">
+          All Requests
         </button>
-        <button
-          class="w3-button w3-blue"
-          style="width: 150px"
-          onclick="showMyTenders();"
-        >
-          My Tenders
+        <button style="width: 225px" onclick="showMyBids();">
+          Requests Accepted by me
         </button>
-        <button
-          class="w3-button w3-red"
-          style="width: 150px"
-          onclick="showAllBids();"
-        >
-          Show all Bids
+        <button style="width: 225px" onclick="showMyTenders();">
+          My Requests Raised
         </button>
-      </center>
-      <center style="margin-bottom: 10px">
-        <button
-          class="w3-button w3-green"
-          style="width: 150px"
-          onclick="showAllTenders();"
-        >
-          Make a Bid
+        <button style="width: 225px" onclick="showAllBids();">
+          My Requests Accepted
         </button>
-        <button
-          class="w3-button w3-blue"
-          style="width: 150px"
-          onclick="showMyBids();"
-        >
-          My Bids</button
-        ><br />
-      </center>
+        <button style="width: 225px" onclick="uploadTenders();">
+          Initiate New Request
+        </button>
+      </div>
     </div>
-
-    <div
-      id="uploadTender"
-      style="margin-top: 20px; width: 450px; display: none"
-      class="container card"
-    >
-      <center style="margin-top: -15px">
-        <div class="w3-section">
-          <form onSubmit="App.submitTender(); return false">
-            <br />
-            <span
-              ><b>Item Name</b
-              ><input class="form-control" id="itemName" /></span
-            ><br />
-
-            <span
-              ><b>Item Description</b
-              ><textarea class="form-control" id="itemDesc"></textarea></span
-            ><br />
-
-            <span
-              ><b>Item Quantity</b
-              ><input
-                class="form-control"
-                type="number"
-                id="itemQuantity" /></span
-            ><br />
-
-            <span id="content">
-              <input
-                class="w3-button w3-green"
-                style="width: 150px"
-                type="submit"
-                value="Upload a Tender"
-              /><br />
-            </span>
-          </form>
-        </div>
-
-        <div
-          id="loading"
-          style="display: none; margin-bottom: 5px; margin-top: -30px"
-        ></div>
-      </center>
-    </div>
-
     <div
       id="myTendersList"
       style="margin-top: 20px; display: none"
-      class="container card"
+      class="dashboard-container"
     >
-      <table id="mytenders" class="table table-hover">
-        <center>
-          <h6><b>My Tenders</b></h6>
-        </center>
-        <hr style="margin-top: -5px; margin-bottom: -1px" />
+      <h3 class="pagetitle" style="text-align: center; width: 100%">
+        My Requests Raised
+      </h3>
+      <table id="mytenders">
         <tr style="text-align: center">
-          <td>Id</td>
-          <td>Tender name</td>
-          <td>Quantity</td>
+          <th>Id</th>
+          <th>Request Name</th>
+          <th>Request Description</th>
+          <th>Quantity</th>
+          <th>Payment Alloted</th>
+          <th>Status</th>
         </tr>
       </table>
     </div>
 
     <div
-      id="bidsList"
+      id="uploadTender"
       style="margin-top: 20px; display: none"
       class="container card"
     >
+      <div class="my-container">
+        <h3 class="pagetitle">Initiate New Request</h3>
+
+        <form onSubmit="App.submitTender(); return false">
+          <label>Request Name</label>
+          <input
+            class="form-control"
+            id="itemName"
+            style="margin-bottom: 30px"
+          />
+
+          <label>Request Description</label>
+          <input
+            class="form-control"
+            id="itemDesc"
+            style="margin-bottom: 30px"
+          />
+
+          <label>Quantity</label>
+          <input
+            class="form-control"
+            id="itemQuantity"
+            style="margin-bottom: 30px"
+          />
+
+          <label>Payment Alloted</label>
+          <input
+            class="form-control"
+            id="itemBudget"
+            style="margin-bottom: 30px"
+          />
+
+          <span id="content">
+            <button
+              type="submit"
+              value="Initiate Request"
+              style="margin-bottom: 20px; width: 180px"
+            >
+              Initiate Request
+            </button>
+          </span>
+        </form>
+      </div>
+
+      <div
+        id="loading"
+        style="display: none; margin-bottom: 5px; margin-top: -30px"
+      ></div>
+    </div>
+
+    <div
+      id="bidsList"
+      style="margin-top: 20px; display: none"
+      class="dashboard-container"
+    >
+      <h3 class="pagetitle" style="text-align: center; width: 100%">
+        My Requests Accepted
+      </h3>
       <table id="bids" class="table table-hover">
-        <center>
-          <h6><b>Bids List</b></h6>
-        </center>
-        <hr style="margin-top: -5px; margin-bottom: -1px" />
         <tr style="text-align: center">
-          <td>Id</td>
-          <td>Tender name</td>
-          <td>Bid Amount</td>
-          <td>Action</td>
+          <th>Id</th>
+          <th>Request Name</th>
+          <th>Accepted Amount</th>
+          <th>Action</th>
         </tr>
       </table>
     </div>
 
     <div
       id="listAllTenders"
-      style="margin-top: 20px; display: none"
-      class="container card"
+      style="margin-top: 20px"
+      class="dashboard-container"
     >
+      <h3 class="pagetitle" style="text-align: center; width: 100%">
+        All Requests
+      </h3>
       <table id="allTenders" class="table table-hover">
-        <center>
-          <h6><b>All Requests</b></h6>
-        </center>
-        <hr style="margin-top: -5px; margin-bottom: -1px" />
         <tr style="text-align: center">
-          <td>Id</td>
-          <td>Request Title</td>
-          <td>Quantity</td>
-          <td>Bid Here</td>
+          <th>Id</th>
+          <th>Request Name</th>
+          <th>Request Description</th>
+          <th>Quantity</th>
+          <th>Payment Alloted</th>
+          <th>Status</th>
+          <th>Action</th>
         </tr>
       </table>
+      <div id="tenderPopup"></div>
     </div>
 
     <div
       id="myBidsList"
       style="margin-top: 20px; display: none"
-      class="container card"
+      class="dashboard-container"
     >
+      <h3 class="pagetitle" style="text-align: center; width: 100%">
+        Requests Accepted by me
+      </h3>
       <table id="myBids" class="table table-hover">
-        <center>
-          <h6><b>My Bids</b></h6>
-        </center>
-        <hr style="margin-top: -5px; margin-bottom: -1px" />
         <tr style="text-align: center">
-          <td>Id</td>
-          <td>Request Title</td>
-          <td>My Bid</td>
+          <th>Id</th>
+          <th>Request Title</th>
+          <th>Accepted Amount</th>
+          <th>Status</th>
         </tr>
       </table>
     </div>
     <br />
-
-    <div id="tenderPopup"></div>
   </body>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

@@ -104,9 +104,6 @@ app.get("/dashboard", (req, res) => {
   }
 });
 
-
-
-
 app.get("/createActor", (req, res) => {
   User.findOne({ username: req.query.username }, (err, user) => {
     if (user.type === "false") {
@@ -119,10 +116,11 @@ app.get("/createActor", (req, res) => {
 
 //AUTHENTICATION
 app.post("/signup", function (req, res) {
+  var name = req.body.name;
   var username = req.body.username;
   var password = req.body.password;
 
-  var newUser = new User({ username: username, type: "false" });
+  var newUser = new User({ username: username, name: name, type: "false" });
   User.register(newUser, password, function (err, user) {
     if (err) {
       console.log(err);

@@ -32,7 +32,8 @@ contract TenderAuction {
         uint id;
         string itemName;
         string itemDescription;
-        uint quantity;
+        string quantity;
+        uint budget;
         address userHash;
     }
 
@@ -78,9 +79,9 @@ contract TenderAuction {
         bidders[msg.sender] = Bidder(bidderCount, _username, _usertype);
     }
 
-    function createTender(string memory _itemName, string memory _itemDescription, uint _quantity) public {
+    function createTender(string memory _itemName, string memory _itemDescription, string memory _quantity, uint _budget) public {
         tenderCount++;
-        tenders[tenderCount] = Tender(tenderCount, _itemName, _itemDescription, _quantity, msg.sender);
+        tenders[tenderCount] = Tender(tenderCount, _itemName, _itemDescription, _quantity, _budget, msg.sender);
     }
 
     function createBid(uint _tenderId, uint _bid) public {
