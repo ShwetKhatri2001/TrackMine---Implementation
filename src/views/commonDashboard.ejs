@@ -37,7 +37,7 @@
       >
       <span
         ><b>Role: </b
-        ><font id="name" size="3"><%=currentUser.type%></font></span
+        ><font id="usertype" size="3"><%=currentUser.type%></font></span
       >
       <span><b>Address: </b><font id="account" size="3"></font></span>
 
@@ -45,15 +45,31 @@
 
       <div class="actions-list">
         <button style="width: 225px" onclick="showAllTenders();">
-          All Requests
+          All Requests Raised
         </button>
         <button style="width: 225px" onclick="showMyBids();">
-          Requests Accepted by me
+          Requests Accepted by Me
         </button>
-        <button style="width: 225px" onclick="showMyTenders();">
+        <button
+          style="
+            width: 225px;
+            background: #fff;
+            color: #007bff;
+            border: 1px solid #007bff;
+          "
+          onclick="showMyTenders();"
+        >
           My Requests Raised
         </button>
-        <button style="width: 225px" onclick="showAllBids();">
+        <button
+          style="
+            width: 225px;
+            background: #fff;
+            color: #007bff;
+            border: 1px solid #007bff;
+          "
+          onclick="showAllBids();"
+        >
           My Requests Accepted
         </button>
         <button style="width: 225px" onclick="uploadTenders();">
@@ -72,11 +88,12 @@
       <table id="mytenders">
         <tr style="text-align: center">
           <th>Id</th>
-          <th>Request Name</th>
+          <th>Request Title</th>
           <th>Request Description</th>
           <th>Quantity</th>
+          <th>Coal Quality</th>
+          <th>Transport Mode</th>
           <th>Payment Alloted</th>
-          <th>Status</th>
         </tr>
       </table>
     </div>
@@ -90,7 +107,7 @@
         <h3 class="pagetitle">Initiate New Request</h3>
 
         <form onSubmit="App.submitTender(); return false">
-          <label>Request Name</label>
+          <label>Request Title</label>
           <input
             class="form-control"
             id="itemName"
@@ -111,10 +128,25 @@
             style="margin-bottom: 30px"
           />
 
+          <label>Coal Quality Required</label>
+          <input
+            class="form-control"
+            id="coalQuality"
+            style="margin-bottom: 30px"
+          />
+
+          <label>Mode of Transport</label>
+          <input
+            class="form-control"
+            id="transportMode"
+            style="margin-bottom: 30px"
+          />
+
           <label>Payment Alloted</label>
           <input
             class="form-control"
             id="itemBudget"
+            type="number"
             style="margin-bottom: 30px"
           />
 
@@ -147,9 +179,10 @@
       <table id="bids" class="table table-hover">
         <tr style="text-align: center">
           <th>Id</th>
-          <th>Request Name</th>
-          <th>Accepted Amount</th>
-          <th>Action</th>
+          <th>Request Title</th>
+          <th>Payment Alloted</th>
+          <th>Amount Accepted</th>
+          <th>Status</th>
         </tr>
       </table>
     </div>
@@ -160,14 +193,16 @@
       class="dashboard-container"
     >
       <h3 class="pagetitle" style="text-align: center; width: 100%">
-        All Requests
+        All Requests Raised
       </h3>
       <table id="allTenders" class="table table-hover">
         <tr style="text-align: center">
           <th>Id</th>
-          <th>Request Name</th>
+          <th>Request Title</th>
           <th>Request Description</th>
           <th>Quantity</th>
+          <th>Coal Quality</th>
+          <th>Transport Mode</th>
           <th>Payment Alloted</th>
           <th>Status</th>
           <th>Action</th>
@@ -182,13 +217,14 @@
       class="dashboard-container"
     >
       <h3 class="pagetitle" style="text-align: center; width: 100%">
-        Requests Accepted by me
+        Requests Accepted by Me
       </h3>
       <table id="myBids" class="table table-hover">
         <tr style="text-align: center">
           <th>Id</th>
           <th>Request Title</th>
-          <th>Accepted Amount</th>
+          <th>Payment Alloted</th>
+          <th>Amount Accepted</th>
           <th>Status</th>
         </tr>
       </table>

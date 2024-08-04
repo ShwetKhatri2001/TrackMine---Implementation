@@ -28,7 +28,6 @@ App = {
       $("#uploader").append(uploaderCandidate);
     }
   },
-
   listBidders: async () => {
     const bidderCount = await App.TenderAuction.bidderCount();
     for (i = 1; i <= bidderCount; i++) {

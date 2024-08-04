@@ -24,6 +24,9 @@ contract TenderAuction {
         address tenderBy;
         uint tenderId;
         string tenderTitle;
+        string tenderType;
+        string status;
+        uint tenderBudget;
         uint bid;
         address userHash;
     }
@@ -34,6 +37,10 @@ contract TenderAuction {
         string itemDescription;
         string quantity;
         uint budget;
+        string status;
+        string tenderType;
+        string transportMode;
+        string coalQuality;
         address userHash;
     }
 
@@ -57,13 +64,13 @@ contract TenderAuction {
     modifier alreadyPresent(address _address) {
         for(uint i = 1; i <= uploaderCount; i++) {
             if(whoIsUploader[i] == _address) {
-                require(1 == 2, "Address already present");
+                require(1 == 2, "Address already associated with an account");
             }
         }
 
         for(uint i = 1; i <= bidderCount; i++) {
             if(whoIsBidder[i] == _address) {
-                require(1 == 2, "Address already present");
+                require(1 == 2, "Address already associated with an account");
             }
         }
         _;
@@ -79,15 +86,14 @@ contract TenderAuction {
         bidders[msg.sender] = Bidder(bidderCount, _username, _usertype);
     }
 
-    function createTender(string memory _itemName, string memory _itemDescription, string memory _quantity, uint _budget) public {
+    function createTender(string memory _itemName, string memory _itemDescription, string memory _quantity, uint _budget, string memory _status, string memory _tenderType, string memory _transportMode, string memory _coalQuality) public {
         tenderCount++;
-        tenders[tenderCount] = Tender(tenderCount, _itemName, _itemDescription, _quantity, _budget, msg.sender);
+        tenders[tenderCount] = Tender(tenderCount, _itemName, _itemDescription, _quantity, _budget, _status, _tenderType, _transportMode,  _coalQuality, msg.sender);
     }
 
-    function createBid(uint _tenderId, uint _bid) public {
+    function createBid(uint _tenderId, string memory bidStatus, uint _bid) public {
         bidCount++;
-        string memory tenderName = tenders[_tenderId].itemName;
         address tenderBy = tenders[_tenderId].userHash;
-        bids[bidCount] = Bid(bidCount, tenderBy, _tenderId, tenderName, _bid, msg.sender);
+        bids[bidCount] = Bid(bidCount, tenderBy, _tenderId, tenders[_tenderId].itemName, tenders[_tenderId].tenderType, bidStatus, tenders[_tenderId].budget, _bid, msg.sender);
     }
 }
