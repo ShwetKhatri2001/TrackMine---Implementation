@@ -20,15 +20,23 @@ App = {
         // console.log("my-tender", tender);
         if (tender?.userHash === App.account) {
           const tenderTemplate = `<tr style="text-align:center">
-                                              <td>${tender?.id}</td>
-                                              <td>${tender?.itemName}</td>
-                                              <td>${tender?.itemDescription}</td>
-                                              <td>${tender?.quantity}</td>
-                                              <td>${tender?.coalQuality}</td>
-                                              <td>${tender?.transportMode}</td>
-                                              <td>${tender?.budget}</td>
-                                             
-                                                                                  </tr>`;
+                                      <td>${tender?.id}</td>
+                                      <td>${tender?.itemName}</td>
+                                      <td>${tender?.itemDescription}</td>
+                                      <td>${tender?.quantity}</td>
+                                      <td>${tender?.coalQuality}</td>
+                                      <td>${tender?.transportMode}</td>
+                                      <td>${tender?.budget}</td>
+                                      <td style="color: ${
+                                        tender?.status === "Approved"
+                                          ? "green"
+                                          : tender?.status === "Accepted"
+                                          ? "blue"
+                                          : "orange"
+                                      }; font-weight: bold;">${
+            tender?.status
+          }</td>
+                                  </tr>`;
           $("#mytenders").append(tenderTemplate);
         }
       }
@@ -52,7 +60,22 @@ App = {
                                               <td>${bid?.tenderTitle}</td>
                                               <td>${bid?.tenderBudget}</td>
                                               <td>${bid?.bid}</td>
-                                              <td style="color: blue; font-weight: bold">${bid?.status}</td>
+                                              <td style="color: ${
+                                                bid?.status === "Approved"
+                                                  ? "green"
+                                                  : bid?.status === "Accepted"
+                                                  ? "blue"
+                                                  : "orange"
+                                              }; font-weight: bold;">${
+            bid?.status
+          }</td>
+                                             <td>
+                                              ${
+                                                bid?.status === "Accepted"
+                                                  ? `<button style="background: green;" onclick="App.approveBidTender(${bid?.id}, ${bid?.tenderId});">Approve</button>`
+                                                  : ""
+                                              }
+                                              </td>
                                           </tr>`;
           $("#bids").append(bidTemplate);
         }
@@ -60,7 +83,7 @@ App = {
     } else {
       $("#bids").append(` 
       <tr style="text-align: center">
-        <td colspan="4">No Requests Accepted</td>
+        <td colspan="6">No Requests Accepted</td>
       </tr>`);
     }
   },
@@ -97,12 +120,33 @@ App = {
 
   listAllTenders: async () => {
     const tenderCount = await App.TenderAuction.tenderCount();
+    const currType = document.getElementById("usertype").innerHTML || "";
+    let validTypes =
+      currType === "Thermal Power Plant"
+        ? ["Electricity Supplier"]
+        : currType === "Coal Miner"
+        ? ["Thermal Power Plant"]
+        : currType === "Regulatory Authority"
+        ? ["Coal Miner", "Transporter"]
+        : currType === "Transporter"
+        ? ["Coal Miner"]
+        : [];
+
     if (tenderCount > 0) {
       for (i = 1; i <= tenderCount; i++) {
         const tender = await App.TenderAuction.tenders(i);
         console.log("all-tender", tender);
 
-        if (tender?.userHash !== App.account) {
+        if (
+          tender?.userHash !== App.account &&
+          validTypes.includes(tender?.tenderType) &&
+          !(
+            (currType === "Transporter" &&
+              tender?.status === "Authority Approved") ||
+            (currType === "Regulatory Authority" &&
+              tender?.status === "Approved")
+          )
+        ) {
           const tenderTemplate = `<tr style="text-align:center">
                                             <td>${tender?.id}</td>
                                             <td>${tender?.itemName}</td>
@@ -111,35 +155,79 @@ App = {
                                             <td>${tender?.coalQuality}</td>
                                             <td>${tender?.transportMode}</td>
                                             <td>${tender?.budget}</td>
-                                            <td style="color: orange; font-weight: bold;">${
-                                              tender?.status
-                                            }</td>
+                                            <td style="color: ${
+                                              tender?.status === "Approved"
+                                                ? "green"
+                                                : tender?.status === "Accepted"
+                                                ? "blue"
+                                                : "orange"
+                                            }; font-weight: bold;">${
+            tender?.status
+          }</td>
                                             <td>
                                             ${
                                               tender?.status === "Pending"
-                                                ? `<button onclick="popup('${tender[0]}')" class="btn btn-success">Accept</button>`
+                                                ? currType ===
+                                                  "Regulatory Authority"
+                                                  ? `<button style="background: green;" onclick="App.approveTender(${tender?.id});">Approve</button>`
+                                                  : `<button onclick="popup('${tender?.id}')">Accept</button>`
                                                 : ""
                                             }
                                             </td>
                                         <tr>`;
 
-          const tenderPopupTemplate = `<div class="abc" id="tenderId${tender[0]}">
+          const tenderPopupTemplate = `<div class="abc" id="tenderId${
+            tender[0]
+          }">
                                                 <br><br><br>
                                                 <div style="margin-top:15%; width: 550px; position: relative; gap: 5px;" class="dashboard-container">
-                                                <span onclick="div_hide('${tender?.id}')" style="float:right" class="x">X</span>
+                                                <span onclick="div_hide('${
+                                                  tender?.id
+                                                }')" style="float:right" class="x">X</span>
                                                     
-                                                    <span style="margin-top:10px;"><b>Request Title: </b>${tender?.itemName}</span>
-                                                    <span style="margin-top:10px;"><b>Request Description: </b>${tender?.itemDescription}</span>
-                                                    <span style="margin-top:10px;"><b>Quantity: </b>${tender?.quantity}</span>
-                                                    <span style="margin-top:10px;"><b>Coal Quality: </b>${tender?.coalQuality}</span>
-                                                    <span style="margin-top:10px;"><b>Transport Mode: </b>${tender?.transportMode}</span>
-                                                    <span style="margin-top:10px;"><b>Payment Alloted: </b>${tender[4]}</span>
-    
+                                                    <span style="margin-top:10px;"><b>Request Title: </b>${
+                                                      tender?.itemName
+                                                    }</span>
+                                                    <span style="margin-top:10px;"><b>Request Description: </b>${
+                                                      tender?.itemDescription
+                                                    }</span>
+                                                    <span style="margin-top:10px;"><b>Quantity: </b>${
+                                                      tender?.quantity
+                                                    }</span>
+                                                    <span style="margin-top:10px;"><b>Coal Quality: </b>${
+                                                      tender?.coalQuality
+                                                    }</span>
+                                                    <span style="margin-top:10px;"><b>Transport Mode: </b>${
+                                                      tender?.transportMode
+                                                    }</span>
+                                                    <span style="margin-top:10px;"><b>Payment Alloted: </b>${
+                                                      tender?.budget
+                                                    }</span>
+                                                    <span style="margin-top:10px;"><b>Status: </b>
+                                                     
+                                    
+                                                    <span style="color: ${
+                                                      tender?.status ===
+                                                      "Approved"
+                                                        ? "green"
+                                                        : tender?.status ===
+                                                          "Accepted"
+                                                        ? "blue"
+                                                        : "orange"
+                                                    }; font-weight: bold;">${
+            tender?.status
+          }</span>
+          </span>
+  
                                                     <hr>
     
                                                     <center style="margin-bottom:10px;">
-                                                        <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${tender[0]}" placeholder="Enter your Amount">
-                                                        <button class="w3-button w3-green" style="width:150px;" onclick="App.makeBid(${tender[0]});">Accept Request</button>
+                                                        <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${
+                                                          tender?.id
+                                                        }" placeholder="Enter your Amount">
+                                                        <button class="w3-button w3-green" style="width:150px;" onclick="App.makeBid(${
+                                                          tender?.id
+                                                        });">Accept Request</button>
                                                     </center>
     
                                                 </div>
@@ -153,7 +241,7 @@ App = {
     } else {
       $("allTenders").append(`
       <tr style="text-align: center">
-        <td colspan="4">No Requests Accepted</td>
+        <td colspan="5">No Requests Accepted</td>
       </tr>`);
     }
   },
@@ -170,7 +258,15 @@ App = {
                                                 <td>${bid?.tenderTitle}</td>
                                                 <td>${bid?.tenderBudget}</td>
                                                 <td>${bid?.bid}</td>
-                                                <td style="color: blue; font-weight: bold">${bid?.status}</td>
+                                                <td style="color: ${
+                                                  bid?.status === "Approved"
+                                                    ? "green"
+                                                    : bid?.status === "Accepted"
+                                                    ? "blue"
+                                                    : "orange"
+                                                }; font-weight: bold;">${
+            bid?.status
+          }</td>
                                             </tr>`;
           $("#myBids").append(bidTemplate);
         }
@@ -178,7 +274,7 @@ App = {
     } else {
       $("#myBids").append(`
       <tr style="text-align: center">
-        <td colspan="4">No Requests Accepted By You</td>
+        <td colspan="5">No Requests Accepted By You</td>
       </tr>`);
     }
   },
@@ -188,6 +284,42 @@ App = {
     try {
       const bid = $("#ppi" + id).val();
       await App.TenderAuction.createBid(id, "Accepted", bid, {
+        from: App.account,
+      });
+      window.location.reload();
+      showMyBids();
+    } catch {
+      window.location.reload();
+      showMyBids();
+    }
+  },
+
+  approveTender: async (tenderId) => {
+    App.setLoading(true);
+    const currType = document.getElementById("usertype").innerHTML || "";
+    let newStatus = "Approved";
+    if (currType === "Regulatory Authority") newStatus = "Authority Approved";
+
+    try {
+      await App.TenderAuction.updateTender(tenderId, newStatus, {
+        from: App.account,
+      });
+      window.location.reload();
+      showAllTenders();
+    } catch {
+      window.location.reload();
+      showAllTenders();
+    }
+  },
+
+  approveBidTender: async (id, tenderId) => {
+    App.setLoading(true);
+    const currType = document.getElementById("usertype").innerHTML || "";
+    let newStatus = "Approved";
+    if (currType === "Regulatory Authority") newStatus = "Authority Approved";
+
+    try {
+      await App.TenderAuction.updateTenderBid(id, tenderId, newStatus, {
         from: App.account,
       });
       window.location.reload();

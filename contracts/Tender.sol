@@ -96,4 +96,19 @@ contract TenderAuction {
         address tenderBy = tenders[_tenderId].userHash;
         bids[bidCount] = Bid(bidCount, tenderBy, _tenderId, tenders[_tenderId].itemName, tenders[_tenderId].tenderType, bidStatus, tenders[_tenderId].budget, _bid, msg.sender);
     }
+
+     function updateTender(uint _tenderId, string memory _newstatus) public { 
+        Tender storage currTender = tenders[_tenderId];
+        currTender.status = _newstatus;
+        tenders[_tenderId] = currTender;
+    }
+
+    function updateTenderBid(uint _id, uint _tenderId, string memory _newstatus) public {
+        Bid storage currBid = bids[_id];
+        Tender storage currTender = tenders[_tenderId];
+        currBid.status = _newstatus;
+        currTender.status = _newstatus;
+        bids[_id] = currBid;
+        tenders[_tenderId] = currTender;
+    }
 }

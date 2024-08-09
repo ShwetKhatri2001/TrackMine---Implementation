@@ -44,9 +44,11 @@
       <hr />
 
       <div class="actions-list">
-        <button style="width: 225px" onclick="showAllTenders();">
+        <button style="width: 200px" onclick="showAllTenders();">
           All Requests Raised
         </button>
+
+        <% if(currentUser.type !== "Regulatory Authority"){ %>
         <button style="width: 225px" onclick="showMyBids();">
           Requests Accepted by Me
         </button>
@@ -63,18 +65,20 @@
         </button>
         <button
           style="
-            width: 225px;
+            width: 300px;
             background: #fff;
             color: #007bff;
             border: 1px solid #007bff;
           "
           onclick="showAllBids();"
         >
-          My Requests Accepted
+          My Requests Accepted / Approved
         </button>
         <button style="width: 225px" onclick="uploadTenders();">
           Initiate New Request
         </button>
+
+        <% } %>
       </div>
     </div>
     <div
@@ -94,6 +98,7 @@
           <th>Coal Quality</th>
           <th>Transport Mode</th>
           <th>Payment Alloted</th>
+          <th>Status</th>
         </tr>
       </table>
     </div>
@@ -174,7 +179,7 @@
       class="dashboard-container"
     >
       <h3 class="pagetitle" style="text-align: center; width: 100%">
-        My Requests Accepted
+        My Requests Accepted / Approved
       </h3>
       <table id="bids" class="table table-hover">
         <tr style="text-align: center">
@@ -183,6 +188,7 @@
           <th>Payment Alloted</th>
           <th>Amount Accepted</th>
           <th>Status</th>
+          <th>Action</th>
         </tr>
       </table>
     </div>
