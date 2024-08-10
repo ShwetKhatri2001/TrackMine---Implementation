@@ -97,7 +97,7 @@ contract TenderAuction {
         bids[bidCount] = Bid(bidCount, tenderBy, _tenderId, tenders[_tenderId].itemName, tenders[_tenderId].tenderType, bidStatus, tenders[_tenderId].budget, _bid, msg.sender);
     }
 
-     function updateTender(uint _tenderId, string memory _newstatus) public { 
+    function updateTender(uint _tenderId, string memory _newstatus) public { 
         Tender storage currTender = tenders[_tenderId];
         currTender.status = _newstatus;
         tenders[_tenderId] = currTender;

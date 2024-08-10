@@ -32,7 +32,12 @@ App = {
                                           ? "green"
                                           : tender?.status === "Accepted"
                                           ? "blue"
-                                          : "orange"
+                                          : tender?.status === "Pending"
+                                          ? "orange"
+                                          : tender?.status ===
+                                            "Authority Approved"
+                                          ? "purple"
+                                          : "brown"
                                       }; font-weight: bold;">${
             tender?.status
           }</td>
@@ -65,7 +70,12 @@ App = {
                                                   ? "green"
                                                   : bid?.status === "Accepted"
                                                   ? "blue"
-                                                  : "orange"
+                                                  : bid?.status === "Pending"
+                                                  ? "orange"
+                                                  : bid?.status ===
+                                                    "Authority Approved"
+                                                  ? "purple"
+                                                  : "brown"
                                               }; font-weight: bold;">${
             bid?.status
           }</td>
@@ -129,7 +139,7 @@ App = {
         : currType === "Regulatory Authority"
         ? ["Coal Miner", "Transporter"]
         : currType === "Transporter"
-        ? ["Coal Miner"]
+        ? ["Coal Miner", "Transporter"]
         : [];
 
     if (tenderCount > 0) {
@@ -141,10 +151,7 @@ App = {
           tender?.userHash !== App.account &&
           validTypes.includes(tender?.tenderType) &&
           !(
-            (currType === "Transporter" &&
-              tender?.status === "Authority Approved") ||
-            (currType === "Regulatory Authority" &&
-              tender?.status === "Approved")
+            currType === "Regulatory Authority" && tender?.status === "Approved"
           )
         ) {
           const tenderTemplate = `<tr style="text-align:center">
@@ -160,9 +167,20 @@ App = {
                                                 ? "green"
                                                 : tender?.status === "Accepted"
                                                 ? "blue"
-                                                : "orange"
+                                                : tender?.status === "Pending"
+                                                ? "orange"
+                                                : tender?.status ===
+                                                  "Authority Approved"
+                                                ? "purple"
+                                                : "brown"
                                             }; font-weight: bold;">${
             tender?.status
+          }</td>
+          <td>${
+            currType === "Transporter" && tender?.tenderType === "Transporter"
+              ? ` <input class="form-control" type="text" style="margin-bottom:10px; width: 150px;" id="updatedstatus${tender?.id}" placeholder="Enter new place">
+              <input class="form-control" type="text" style="margin-bottom:10px; width: 150px;" id="updatedname${tender?.id}" placeholder="Enter your name">`
+              : ""
           }</td>
                                             <td>
                                             ${
@@ -171,6 +189,10 @@ App = {
                                                   "Regulatory Authority"
                                                   ? `<button style="background: green;" onclick="App.approveTender(${tender?.id});">Approve</button>`
                                                   : `<button onclick="popup('${tender?.id}')">Accept</button>`
+                                                : currType === "Transporter" &&
+                                                  tender?.tenderType ===
+                                                    "Transporter"
+                                                ? `<button onclick="App.updateTransportStatus(${tender?.id}, '${tender?.status}');">Update</button>`
                                                 : ""
                                             }
                                             </td>
@@ -213,14 +235,19 @@ App = {
                                                         : tender?.status ===
                                                           "Accepted"
                                                         ? "blue"
-                                                        : "orange"
+                                                        : tender?.status ===
+                                                          "Pending"
+                                                        ? "orange"
+                                                        : tender?.status ===
+                                                          "Authority Approved"
+                                                        ? "purple"
+                                                        : "brown"
                                                     }; font-weight: bold;">${
             tender?.status
           }</span>
           </span>
   
                                                     <hr>
-    
                                                     <center style="margin-bottom:10px;">
                                                         <input class="form-control" type="number" style="margin-bottom:10px;" id="ppi${
                                                           tender?.id
@@ -263,7 +290,12 @@ App = {
                                                     ? "green"
                                                     : bid?.status === "Accepted"
                                                     ? "blue"
-                                                    : "orange"
+                                                    : bid?.status === "Pending"
+                                                    ? "orange"
+                                                    : bid?.status ===
+                                                      "Authority Approved"
+                                                    ? "purple"
+                                                    : "brown"
                                                 }; font-weight: bold;">${
             bid?.status
           }</td>
@@ -291,6 +323,27 @@ App = {
     } catch {
       window.location.reload();
       showMyBids();
+    }
+  },
+
+  updateTransportStatus: async (tenderId, tenderStatus) => {
+    App.setLoading(true);
+    let newStatus = tenderStatus + " --> ";
+    const enteredStatus = $("#updatedstatus" + tenderId).val();
+    const enteredName = $("#updatedname" + tenderId).val();
+    const appendString =
+      "Place : " + enteredStatus + ", Confirmed By : " + enteredName + " ";
+    newStatus += appendString;
+
+    try {
+      await App.TenderAuction.updateTender(tenderId, newStatus, {
+        from: App.account,
+      });
+      window.location.reload();
+      showAllTenders();
+    } catch {
+      window.location.reload();
+      showAllTenders();
     }
   },
 

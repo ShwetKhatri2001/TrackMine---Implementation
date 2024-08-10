@@ -211,6 +211,9 @@
           <th>Transport Mode</th>
           <th>Payment Alloted</th>
           <th>Status</th>
+          <% if(currentUser.type === "Transporter"){ %>
+          <th>Status Updates (Place and Name)</th>
+          <% } %>
           <th>Action</th>
         </tr>
       </table>
