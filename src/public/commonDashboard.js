@@ -48,7 +48,7 @@ App = {
     } else {
       $("#mytenders").append(` 
       <tr style="text-align: center">
-        <td colspan="4">No Requests Raised</td>
+        <td colspan="8">No Requests Raised</td>
       </tr>`);
     }
   },
@@ -173,15 +173,17 @@ App = {
                                                   "Authority Approved"
                                                 ? "purple"
                                                 : "brown"
-                                            }; font-weight: bold;">${
+                                            }; font-weight: bold; width:250px;">${
             tender?.status
           }</td>
-          <td>${
-            currType === "Transporter" && tender?.tenderType === "Transporter"
-              ? ` <input class="form-control" type="text" style="margin-bottom:10px; width: 150px;" id="updatedstatus${tender?.id}" placeholder="Enter new place">
-              <input class="form-control" type="text" style="margin-bottom:10px; width: 150px;" id="updatedname${tender?.id}" placeholder="Enter your name">`
+          ${
+            currType === "Transporter"
+              ? tender?.tenderType === "Transporter"
+                ? ` <td><input class="form-control" type="text" style="margin-bottom:10px; width: 150px;" id="updatedstatus${tender?.id}" placeholder="Enter new place">
+              <input class="form-control" type="text" style="margin-bottom:10px; width: 150px;" id="updatedname${tender?.id}" placeholder="Enter your name"></td>`
+                : "<td></td>"
               : ""
-          }</td>
+          }
                                             <td>
                                             ${
                                               tender?.status === "Pending"
@@ -189,9 +191,12 @@ App = {
                                                   "Regulatory Authority"
                                                   ? `<button style="background: green;" onclick="App.approveTender(${tender?.id});">Approve</button>`
                                                   : `<button onclick="popup('${tender?.id}')">Accept</button>`
-                                                : currType === "Transporter" &&
-                                                  tender?.tenderType ===
-                                                    "Transporter"
+                                                : ""
+                                            }
+                                            ${
+                                              currType === "Transporter" &&
+                                              tender?.tenderType ===
+                                                "Transporter"
                                                 ? `<button onclick="App.updateTransportStatus(${tender?.id}, '${tender?.status}');">Update</button>`
                                                 : ""
                                             }
@@ -331,8 +336,7 @@ App = {
     let newStatus = tenderStatus + " --> ";
     const enteredStatus = $("#updatedstatus" + tenderId).val();
     const enteredName = $("#updatedname" + tenderId).val();
-    const appendString =
-      "Place : " + enteredStatus + ", Confirmed By : " + enteredName + " ";
+    const appendString = enteredStatus + " ( " + enteredName + " ) ";
     newStatus += appendString;
 
     try {
